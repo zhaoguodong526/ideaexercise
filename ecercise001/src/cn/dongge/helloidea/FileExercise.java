@@ -1,11 +1,15 @@
 package cn.dongge.helloidea;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 
 public class FileExercise {
     public static void main(String[] args) {
-        testDelete();
+        String path="ecercise001\\src\\cn\\dongge\\helloidea";
+        testFilenameFilter(path);
     }
 
     public static void fileSeparator(){
@@ -78,5 +82,76 @@ public class FileExercise {
         File file=new File(path);
         boolean del=file.delete();
         System.out.println("删除文件："+del);
+    }
+
+    public static void testForearch(){
+        String path="ecercise001\\src\\cn\\dongge\\helloidea";
+        File file=new File(path);
+        String[] fileNames=file.list();
+        for(String fileName:fileNames){
+            System.out.println(fileName);
+        }
+        File[] files=file.listFiles();
+        for(File f:files){
+            System.out.println(f);
+        }
+    }
+    public static void testDiGui(String path){
+        //String path="ecercise001\\src\\cn\\dongge\\helloidea";
+        File file=new File(path);
+        System.out.println(file.getPath());
+        File[] files=file.listFiles();
+        for(File f:files){
+            if(f.isDirectory()){
+                testDiGui(f.getPath());
+            }else{
+                System.out.println(f.getPath());
+            }
+        }
+    }
+
+    public static void testFileFilter(String path){
+        File file=new File(path);
+        //FileFilter对象会在listFiles方法中被调用，当accept方法返回的是true的file才会被listFiles方法返回
+        File[] files=file.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                if(pathname.isDirectory()){
+                    return true;
+                }else{
+                    return pathname.getName().endsWith(".java")||pathname.getName().endsWith(".txt");
+                }
+            }
+        });
+        for(File f:files){
+            if(f.isDirectory()){
+                testFileFilter(f.getPath());
+            }else{
+                System.out.println(f.getPath());
+            }
+        }
+    }
+
+    public static void testFilenameFilter(String path){
+        File file=new File(path);
+        File[] files=file.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                String pathEndName=dir.getName();
+                if(pathEndName.equals(name)){
+                    if(!(name.endsWith(".java")||name.endsWith(".txt"))){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
+        for(File f:files){
+            if(f.isDirectory()){
+                testFileFilter(f.getPath());
+            }else{
+                System.out.println(f.getPath());
+            }
+        }
     }
 }
